@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WonderTrip</title>
+</head>
+<body>
+    <h1>WonderTrip</h1>
+    <form methode = "GET" action="/listings/new">
+        <button>Create New</button>
+    </form>
+    <ul>
+        <!-- <% for(let listing of allListings){ %> -->
+        <li>
+            <h1><a href="/listings/<%= listing._id %>"><%= listing.title %></a></h1>
+            
+        </li>
+        <!-- <% } %> -->
+    </ul>
+</body>
+</html>
