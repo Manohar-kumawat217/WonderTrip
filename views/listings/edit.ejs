@@ -7,7 +7,7 @@
 </head>
 <body>
     <h2>Edit your listing</h2>
-    <form method="POST" action="/listings">
+    <form method="POST" action="/listings/<%= listing._id %>?_method=PUT">
         <input 
             name="listing[title]" 
             value="<%= listing.title %>"
@@ -37,6 +37,8 @@
         /><br><br>
         
         <button>Edit</button>
-    </form>
+    </form><br>
+    <a href="/listings"><button>Back to homepage</button></a>
+
 </body>
 </html>

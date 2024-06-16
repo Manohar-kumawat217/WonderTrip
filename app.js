@@ -5,9 +5,11 @@ const app = express();
 const mongoose = require("mongoose");
 const Listing = require("../WonderTrip/models/listing.js")
 const path = require("path");
-const MONGO_URL = "mongodb://127.0.0.1:27017/wondertrip";
+const methodOverride = require("method-override")
 
-// MOngoDB Connection Code start
+// MongoDB Connection Code start ----------------------------------------------
+
+const MONGO_URL = "mongodb://127.0.0.1:27017/wondertrip";
 
 main().then( () => {
     console.log("Connected to DB");
@@ -19,13 +21,14 @@ async function main(){
     await mongoose.connect(MONGO_URL);
 }
 
-// MOngoDB Connection Code end
+// MOngoDB Connection Code end ------------------------------------------------
+
+
 
 app.set("view engine","ejs");
 app.set("views", path.join(__dirname,"views"));
 app.use(express.urlencoded({ extended:true }));
-
-//----------------GET REAUESTS ------------
+app.use(methodOverride('_method'));
 
 // INDEX ROUTE
 
@@ -34,12 +37,25 @@ app.get("/listings",async(req,res) => {
     res.render("listings/index.ejs",{allListings})
 })
 
+//  -------------------------------  CREATE ------------------------------
+
 // NEW ROUTE
 
 app.get("/listings/new",(req,res) => {
     res.render("listings/new.ejs");
 })
 
+// CREATE ROUTE
+
+app.post("/listings",async(req,res) => {
+    let listing = new Listing(req.body.listing);
+    await listing.save();
+    res.redirect("/listings");
+})
+
+//  -------------------------------  CREATE ------------------------------
+
+//  -------------------------------  READ  -------------------------------
 // SHOW ROUTE 
 
 app.get("/listings/:id",async(req,res) => {
@@ -48,19 +64,31 @@ app.get("/listings/:id",async(req,res) => {
     res.render("listings/show.ejs",{listing});
 })
 
+//  -------------------------------  READ  -------------------------------
+
+//  -------------------------------  UPDATE  -------------------------------
+
+//  EDIT ROUTE
+
 app.get("/listings/:id/edit",async(req,res) => {
     let {id} = req.params;
     let listing = await Listing.findById(id);
     res.render("listings/edit.ejs",{listing});
 })
 
-// ---------------- POST REQUESTS   ----------------
+// UPDATE ROUTE
 
-// CREATE ROUTE
+app.put("/listings/:id",async(req,res) => {
+    let {id} = req.params;
+    await Listing.findByIdAndUpdate(id,{...req.body.listing});
+    res.redirect(`/listings/${id}`);
+})
 
-app.post("/listings",async(req,res) => {
-    let listing = new Listing(req.body.listing);
-    await listing.save();
+// DELETE ROUTE
+
+app.delete("/listings/:id",async(req,res) => {
+    let {id} = req.params;
+    await Listing.findByIdAndDelete(id);
     res.redirect("/listings");
 })
 
